@@ -1,0 +1,208 @@
+%start program
+                                  
+%%
+
+program:
+      statements
+    ;
+
+:
+      statements statement
+    | statement
+    ;
+
+statement:
+      load_stmt
+    | save_stmt
+    | filter_stmt
+    | select_stmt
+    | drop_stmt
+    | rename_stmt
+    | replace_stmt
+    | fillna_stmt
+    | groupby_stmt
+    | sort_stmt
+    | join_stmt
+    | preprocess_stmt
+    | train_stmt
+    | evaluate_stmt
+    | show_stmt
+    | delete_stmt
+    | delete_rows_stmt
+    | encode_stmt
+    | normalize_stmt
+    | split_stmt
+    | unique_stmt
+    | head_stmt
+    | tail_stmt
+    | stat_function
+    | plot_stmt
+    | eval_metric_stmt
+    | ml_algorithm
+    ;
+
+load_stmt:
+      LOAD FROM STRING ';'
+    ;
+
+save_stmt:
+    SAVE STRING ';'
+;
+
+
+filter_stmt:
+      FILTER WHERE condition ';'
+    ;
+
+select_stmt:
+      SELECT column_list ';'
+    ;
+
+drop_stmt:
+      DROP column_list ';'
+    ;
+
+rename_stmt:
+      RENAME STRING TO STRING ';'
+    ;
+
+replace_stmt:
+      REPLACE STRING WITH STRING ';'
+    ;
+
+fillna_stmt:
+      FILLNA WITH value ';'
+    ;
+
+groupby_stmt:
+      GROUPBY column BY agg_function ';'
+    ;
+
+sort_stmt:
+      SORT BY column order_opt ';'
+    ;
+
+join_stmt:
+      JOIN STRING ON STRING ';'
+    ;
+
+preprocess_stmt:
+      PREPROCESS WITH STRING ';'
+    ;
+
+train_stmt:
+      TRAIN WITH STRING ';'
+    ;
+
+evaluate_stmt:
+      EVALUATE WITH STRING ';'
+    ;
+
+show_stmt:
+      SHOW STRING ';'
++   | SHOW stat_func OF column ';'
+;
+
+
+delete_stmt:
+      DELETE STRING ';'
+    ;
+
+delete_rows_stmt:
+      DELETE_ROWS WHERE condition ';'
+    ;
+
+encode_stmt:
+      ENCODE column_list ';'
+    ;
+
+normalize_stmt:
+      NORMALIZE column_list ';'
+    ;
+
+split_stmt:
+      SPLIT DATA TO STRING ';'
+    ;
+
+unique_stmt:
+      UNIQUE column ';'
+    ;
+
+head_stmt:
+      HEAD NUMBER ';'
+    ;
+
+tail_stmt:
+      TAIL NUMBER ';'
+    ;
+
+stat_function:
+      stat_func OF column ';'
+    ;
+
+stat_func:
+      MEAN | MEDIAN | MODE | STD | VAR | MIN | MAX | COUNT | CORR | COV
+    ;
+
+eval_metric_stmt:
+      ACCURACY | PRECISION | RECALL | F1SCORE | ROC_AUC ';'
+    ;
+
+ml_algorithm:
+      LINEAR_REGRESSION
+    | KNN
+    | SVM
+    | DECISION_TREE
+    | RANDOM_FOREST
+    | KMEANS
+      ';'
+    ;
+
+plot_stmt:
+      PLOT STRING
+    | HISTOGRAM column
+    | SCATTER column_list
+    | BOXPLOT column
+    | BAR column
+    | LINEPLOT column
+    | HEATMAP column_list
+      ';'
+    ;
+
+column_list:
+      column
+    | column_list ',' column
+    ;
+
+column:
+      STRING
+    ;
+
+order_opt:
+      ASC
+    | DESC
+    ;
+
+condition:
+      column comp_op value
+    | condition AND condition
+    | condition OR condition
+    | NOT condition
+    ;
+
+comp_op:
+      '>'
+    | '<'
+    | '>='
+    | '<='
+    | '=='
+    | '!='
+    ;
+
+value:
+      STRING
+    | NUMBER
+    ;
+
+%%
+

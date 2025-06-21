@@ -1,0 +1,24 @@
+# Node.js stuff
+node_modules/
+package-lock.json
+
+# Flex/Bison generated files
+lex.yy.c
+dsl_parser.tab.c
+dsl_parser.tab.h
+
+# Compiler output
+*.o
+*.out
+*.exe
+
+# Temporary input/output files
+input.*
+output.*
+
+# Python + CSV files
+*.py
+*.csv
+
+# Plot images (optional if regenerated)
+*.png

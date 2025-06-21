@@ -1,0 +1,14 @@
+{
+  "name": "dsl_compiler_interface",
+  "version": "1.0.0",
+  "description": "Web interface for DSL to Python compiler",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Gaurav",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

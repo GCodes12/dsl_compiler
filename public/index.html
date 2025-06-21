@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DSL Compiler Interface</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="top-bar">
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <button class="run-button" onclick="compileDSL()">⚙️ Compile & Run</button>
+  </div>
+
+  <div class="main-layout">
+    <div class="top-section">
+      <div class="editor">
+        <h3>Input DSL Code</h3>
+        <textarea id="dslInput"></textarea>
+      </div>
+      <div class="output-box">
+        <h4>📜 Text Output</h4>
+        <pre id="consoleOutput">// Output from script</pre>
+      </div>
+    </div>
+
+    <div class="bottom-section">
+      <div class="editor">
+        <h3>Generated Python Code</h3>
+        <textarea id="pythonOutput" readonly></textarea>
+      </div>
+      <div class="output-box">
+        <h4>📊 Plot Output</h4>
+        <div id="plotImages" class="plot-scroll">📊 No plots generated.</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

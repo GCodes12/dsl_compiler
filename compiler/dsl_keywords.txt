@@ -1,0 +1,86 @@
+# DSL Keywords for Statistical Analysis and Machine Learning Compiler
+
+# Data Operations
+LOAD
+SAVE
+FILTER
+SELECT
+DROP
+RENAME
+REPLACE
+FILLNA
+GROUPBY
+SORT
+JOIN
+PREPROCESS
+TRAIN
+EVALUATE
+SHOW
+DELETE
+DELETE_ROWS
+ENCODE
+NORMALIZE
+SPLIT
+UNIQUE
+HEAD
+TAIL
+
+# Statistical Functions
+MEAN
+MEDIAN
+MODE
+STD
+VAR
+MIN
+MAX
+COUNT
+CORR
+COV
+
+# Evaluation Metrics
+ACCURACY
+PRECISION
+RECALL
+F1SCORE
+ROC_AUC
+
+# ML Algorithms
+LINEAR_REGRESSION
+KNN
+SVM
+DECISION_TREE
+RANDOM_FOREST
+KMEANS
+
+# Plotting
+SHOW
+PLOT
+HISTOGRAM
+SCATTER
+BOXPLOT
+BAR
+LINEPLOT
+HEATMAP
+
+# Logical & Comparison Operators
+AND
+OR
+NOT
+>
+<
+>=
+<=
+==
+!=
+
+# Other Keywords
+BY
+WITH
+ON
+AS
+IN
+TO
+FROM
+WHERE
+
+SAVE
