@@ -12,6 +12,10 @@ WORKDIR /app
 # Copy everything into the container
 COPY . .
 
+# ✅ Install Python dependencies
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
+
 # Install Node.js dependencies
 RUN npm install
 
