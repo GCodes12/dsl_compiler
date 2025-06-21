@@ -22,63 +22,57 @@ app.post('/compile', (req, res) => {
     return res.status(400).json({ error: 'Invalid DSL code input.' });
   }
 
-  // Ensure compiler directory exists
-  if (!fs.existsSync(compilerDir)) {
-    return res.status(500).json({ error: 'Compiler directory missing.' });
-  }
-
-  // Write DSL code to input.dsl
+  // Save input.dsl
   try {
     fs.writeFileSync(inputDSLPath, dslCode);
   } catch (err) {
     return res.status(500).json({ error: 'Failed to write input.dsl.' });
   }
 
-  // Clean or create plots directory
+  // Clean/create plots directory
   try {
     if (!fs.existsSync(plotsDir)) fs.mkdirSync(plotsDir);
     fs.readdirSync(plotsDir).forEach(f => fs.unlinkSync(path.join(plotsDir, f)));
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to prepare plots directory.' });
+    return res.status(500).json({ error: 'Failed to clean plots directory.' });
   }
 
-  // ✅ Fixed: Use correct executable name
+  // Run DSL compiler
   exec(`cd ${compilerDir} && ./dsl_compiler input.dsl`, (err, stdout, stderr) => {
     if (err) {
-      console.error('Compilation error:', stderr);
-      return res.status(500).json({ error: 'DSL compilation failed.', details: stderr });
+      console.error('❌ Compiler Error:', stderr);
+      return res.status(500).json({ error: 'Compiler failed', details: stderr });
     }
 
-    let generatedPython = '';
+    let pythonCode = '';
     try {
-      generatedPython = fs.readFileSync(outputPythonPath, 'utf8');
-    } catch (e) {
-      generatedPython = '# Error: output.py not found.';
+      pythonCode = fs.readFileSync(outputPythonPath, 'utf8');
+    } catch {
+      pythonCode = '# output.py not found.';
     }
 
-    // Run the generated Python script
-    exec(`cd ${compilerDir} && python3 output.py`, (err, pyOut, pyErr) => {
-      const scriptOutput = err ? pyErr : pyOut;
+    // Run Python code
+    exec(`cd ${compilerDir} && python3 output.py`, (pyErr, pyOut, pyStderr) => {
+      const consoleOutput = pyErr ? pyStderr : pyOut;
 
-      let plotFiles = [];
+      let plotImages = [];
       try {
-        plotFiles = fs.readdirSync(plotsDir)
-          .filter(file => file.endsWith('.png'))
-          .map(file => `/plots/${file}`);
+        plotImages = fs.readdirSync(plotsDir)
+          .filter(f => f.endsWith('.png'))
+          .map(f => `/plots/${f}`);
       } catch (e) {
-        console.error('Failed to list plot files:', e);
+        console.error('⚠️ Plot read error:', e);
       }
 
       res.json({
-        generated_python: generatedPython,
-        console_output: scriptOutput.trim(),
-        plots: plotFiles
+        generated_python: pythonCode,
+        console_output: consoleOutput.trim(),
+        plots: plotImages
       });
     });
   });
 });
 
-// Start the server
 app.listen(PORT, () => {
-  console.log(`🚀 DSL server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
