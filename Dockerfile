@@ -6,14 +6,13 @@ RUN apt-get update && \
     apt-get install -y flex bison gcc g++ python3 python3-pip nodejs npm && \
     apt-get clean
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
 # Copy all project files
 COPY . .
 
-# ✅ Install Python dependencies safely
-RUN pip3 install --break-system-packages --upgrade pip
+# ✅ Install Python dependencies without pip upgrade
 RUN pip3 install --break-system-packages -r requirements.txt
 
 # ✅ Install Node.js dependencies
