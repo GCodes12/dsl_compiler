@@ -12,17 +12,14 @@ WORKDIR /app
 # Copy all project files
 COPY . .
 
-# ✅ Install Python dependencies without pip upgrade
+# ✅ Install Python dependencies (no pip upgrade needed)
 RUN pip3 install --break-system-packages -r requirements.txt
 
 # ✅ Install Node.js dependencies
 RUN npm install
 
-# ✅ Compile the C-based DSL compiler
-RUN cd compiler && \
-    bison -d dsl_parser.y && \
-    flex dsl_lexer.l && \
-    gcc -o dsl_compiler lex.yy.c dsl_parser.tab.c main.c -lm
+# ✅ Build the C-based DSL compiler using render-build.sh
+RUN bash render-build.sh
 
 # Expose the port your server will run on
 EXPOSE 3000
