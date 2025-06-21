@@ -9,7 +9,7 @@ bison -d dsl_parser.y
 # Step 2: Generate lexer code from Flex
 flex dsl_lexer.l
 
-# Step 3: Compile using gcc (C)
+# Step 3: Compile using gcc
 gcc -o dsl_compiler lex.yy.c dsl_parser.tab.c main.c -lfl
 
 cd ..

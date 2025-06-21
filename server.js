@@ -10,64 +10,40 @@ const inputDSLPath = path.join(compilerDir, 'input.dsl');
 const outputPythonPath = path.join(compilerDir, 'output.py');
 const plotsDir = path.join(compilerDir, 'plots');
 
-// Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/plots', express.static(plotsDir));
 
-// POST endpoint for DSL compilation
 app.post('/compile', (req, res) => {
   const dslCode = req.body.code;
-  if (!dslCode || typeof dslCode !== 'string') {
-    return res.status(400).json({ error: 'Invalid DSL code input.' });
-  }
+  fs.writeFileSync(inputDSLPath, dslCode);
 
-  // Save input.dsl
-  try {
-    fs.writeFileSync(inputDSLPath, dslCode);
-  } catch (err) {
-    return res.status(500).json({ error: 'Failed to write input.dsl.' });
-  }
-
-  // Clean/create plots directory
   try {
     if (!fs.existsSync(plotsDir)) fs.mkdirSync(plotsDir);
-    fs.readdirSync(plotsDir).forEach(f => fs.unlinkSync(path.join(plotsDir, f)));
+    fs.readdirSync(plotsDir).forEach(file =>
+      fs.unlinkSync(path.join(plotsDir, file))
+    );
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to clean plots directory.' });
+    console.error("Failed to clean plots folder.");
   }
 
-  // Run DSL compiler
   exec(`cd ${compilerDir} && ./dsl_compiler input.dsl`, (err, stdout, stderr) => {
-    if (err) {
-      console.error('❌ Compiler Error:', stderr);
-      return res.status(500).json({ error: 'Compiler failed', details: stderr });
-    }
+    if (err) return res.status(500).json({ error: stderr });
 
-    let pythonCode = '';
-    try {
-      pythonCode = fs.readFileSync(outputPythonPath, 'utf8');
-    } catch {
-      pythonCode = '# output.py not found.';
-    }
+    let pythonCode = fs.existsSync(outputPythonPath)
+      ? fs.readFileSync(outputPythonPath, 'utf8')
+      : "# output.py not found";
 
-    // Run Python code
     exec(`cd ${compilerDir} && python3 output.py`, (pyErr, pyOut, pyStderr) => {
-      const consoleOutput = pyErr ? pyStderr : pyOut;
-
-      let plotImages = [];
-      try {
-        plotImages = fs.readdirSync(plotsDir)
-          .filter(f => f.endsWith('.png'))
-          .map(f => `/plots/${f}`);
-      } catch (e) {
-        console.error('⚠️ Plot read error:', e);
-      }
+      const finalOutput = pyErr ? pyStderr : pyOut;
+      const plots = fs.readdirSync(plotsDir)
+        .filter(f => f.endsWith('.png'))
+        .map(f => `/plots/${f}`);
 
       res.json({
         generated_python: pythonCode,
-        console_output: consoleOutput.trim(),
-        plots: plotImages
+        console_output: finalOutput.trim(),
+        plots: plots
       });
     });
   });
