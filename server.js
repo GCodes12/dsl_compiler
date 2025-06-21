@@ -42,8 +42,8 @@ app.post('/compile', (req, res) => {
     return res.status(500).json({ error: 'Failed to prepare plots directory.' });
   }
 
-  // Run your C-based compiler
-  exec(`cd ${compilerDir} && ./compiler < input.dsl`, (err, stdout, stderr) => {
+  // ✅ Fixed: Use correct executable name
+  exec(`cd ${compilerDir} && ./dsl_compiler input.dsl`, (err, stdout, stderr) => {
     if (err) {
       console.error('Compilation error:', stderr);
       return res.status(500).json({ error: 'DSL compilation failed.', details: stderr });
@@ -57,8 +57,8 @@ app.post('/compile', (req, res) => {
     }
 
     // Run the generated Python script
-    exec(`cd ${compilerDir} && python3 output.py`, (err, stdout, stderr) => {
-      const scriptOutput = err ? stderr : stdout;
+    exec(`cd ${compilerDir} && python3 output.py`, (err, pyOut, pyErr) => {
+      const scriptOutput = err ? pyErr : pyOut;
 
       let plotFiles = [];
       try {
